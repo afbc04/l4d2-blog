@@ -1,0 +1,172 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:50px 0;")
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/bragaCentro.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:800px; padding:50px; border-radius:12px; box-shadow: 0 12px 35px rgba(0,0,0,0.25); background:#ffffff;")
+      
+      a(
+        href="javascript:history.back()",
+        style="position:absolute; top:20px; left:25px; color:#008080; font-size:0.9rem; text-decoration:none; font-weight:500;"
+      ) Go back
+
+      .header(style="text-align:center; margin-bottom:30px;")
+        h2(style="color:#008080; font-family:'Segoe UI', sans-serif; font-size:1.8rem;") Edit User
+        p(style="color:#666; font-size:0.95rem; margin-top:5px;") Update your profile
+
+      form#userEditForm(method="POST" enctype="multipart/form-data", novalidate)
+
+        .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
+          
+          .w3-center.w3-margin-bottom(style="position:relative; display:flex; flex-direction:column; align-items:center;")
+            label.w3-text-gray
+              b Profile Picture
+            .profile-edit(style="position:relative; margin-top:10px;")
+              img#previewAvatar(
+                src=user.profilePicture || '/images/panado.jpg',
+                style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #eee",
+                draggable="false",
+                oncontextmenu="return false;"
+              )
+              button#removePhotoBtn(
+                type="button",
+                title="Remove photo",
+                style="position:absolute; top:40%; left:50%; transform:translate(-50%, -50%); background:rgba(170,170,170,0.8); border:none; border-radius:50%; width:32px; height:32px; color:white; font-weight:bold; font-size:1.1rem; display:none; cursor:pointer;"
+              ) ×
+
+              input#profileFile.w3-input(type="file", name="profilePicture", style="margin-top:10px; cursor:pointer;")
+                          
+          fieldset(style="margin-top:15px; border:none; display:flex; flex-direction:column; gap:15px;")
+            legend(style="font-weight:bold; font-size:1rem; margin-bottom:10px;")
+
+            label
+              b Username
+            input.w3-input.w3-round(type="text", name="username", value=user._id, readonly)
+            
+            label
+              b Name
+              span(style="color:red") * 
+            input.w3-input.w3-round(type="text", name="name", value=user.name, placeholder="What do we call you?")
+            span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Name is required.
+
+            label.w3-text-gray
+              b Real Name (optional)
+            input.w3-input.w3-round(type="text", name="realName", value=user.realName || "", placeholder="What is your real name?")
+
+            label.w3-text-gray
+              b Locality (opcional)
+              .location-wrapper(style="display:flex; align-items:center; gap:8px; margin-top:5px;")
+                select.w3-select#countrySelect(name="location", style="flex:1; padding:6px 8px;")
+                  option(value="")
+                  each country in countries
+                    option(value=country.code, selected=country.code === user.location)= country.name
+                img#countryFlag(src="", alt="Flag", width="32", height="20", style="display:none; border:1px solid #ccc;")
+
+            label.w3-text-gray
+              b Birth Date (opcional)
+            .dob(style="display:flex; gap:10px; align-items:center;")
+
+              select.w3-select(name="birthDay")
+                option(value="")
+                each day in Array.from({length:31}, (_,i) => i+1)
+                  option(value=day, selected=day === user.birthDay)= day
+
+              select.w3-select(name="birthMonth")
+                option(value="")
+                each m in [[1,'Jan'],[2,'Feb'],[3,'Mar'],[4,'Apr'],[5,'May'],[6,'Jun'],[7,'Jul'],[8,'Aug'],[9,'Sep'],[10,'Oct'],[11,'Nov'],[12,'Dec']]
+                  option(value=m[0], selected=m[0] === user.birthMonth)= m[1]
+              
+              select.w3-select(name="birthYear")
+                option(value="")
+                - const currentYear = new Date().getFullYear();
+                each y in Array.from({length:100}, (_,i) => currentYear - i)
+                  option(value=y, selected=y === user.birthYear)= y
+
+            div.helper-texts(style="font-size:0.8rem; color:#888; margin-top:2px;")
+              span In order for the system to know your birthday, you should provide day & month.
+              br
+              span
+                i To keep your age private, do not provide year.
+
+            label.w3-text-gray
+              b Email (optional)
+            input.w3-input.w3-round(type="email", name="email", value=user.email || "", placeholder="Email for password reset")
+
+          if error
+            p(style="color:red; text-align:center; margin-top:10px; font-weight:500")= error
+
+          .w3-margin-top.w3-center
+            button.w3-button(type="submit", style="width:50%; padding:12px; background:#008080; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; transition: background 0.3s;")
+              | Save Changes
+
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      const input = document.getElementById('profileFile');
+      const img = document.getElementById('previewAvatar');
+      const removeBtn = document.getElementById('removePhotoBtn');
+      const select = document.getElementById('countrySelect');
+      const flagImg = document.getElementById('countryFlag');
+      const form = document.getElementById('userEditForm');
+
+      if (select.value) {
+        const code = select.value.toLowerCase();
+        flagImg.src = `https://flagpedia.net/data/flags/h80/${code.toLowerCase()}.png`;
+        flagImg.style.display = 'inline-block';
+        flagImg.alt = select.options[select.selectedIndex].text + " Flag";
+      } else {
+        flagImg.style.display = 'none';
+        flagImg.src = '';
+      }
+
+      // Country flag display
+      select.addEventListener('change', () => {
+        const code = select.value;
+        if (code) {
+          flagImg.src = `https://flagpedia.net/data/flags/h80/${code.toLowerCase()}.png`;
+          flagImg.style.display = 'inline-block';
+          flagImg.alt = select.options[select.selectedIndex].text + " Flag";
+        } else {
+          flagImg.style.display = 'none';
+          flagImg.src = '';
+        }
+      });
+
+      // Profile picture preview
+      if (input && img) {
+        input.addEventListener('change', function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            img.src = URL.createObjectURL(file);
+          }
+        });
+      }
+
+      if (img && removeBtn) {
+        img.addEventListener('mouseover', () => removeBtn.style.display='block');
+        img.addEventListener('mouseout', () => removeBtn.style.display='none');
+        removeBtn.addEventListener('mouseover', () => removeBtn.style.display='block');
+        removeBtn.addEventListener('mouseout', () => removeBtn.style.display='none');
+        removeBtn.addEventListener('click', () => { 
+          img.src='/images/panado.jpg'; 
+          input.value = '';
+        });
+      }
+
+      // Form validation
+      form.addEventListener('submit', function(e) {
+        let valid = true;
+        const requiredFields = form.querySelectorAll('[name="name"]');
+        requiredFields.forEach(f => {
+          const msg = f.nextElementSibling;
+          if (!f.value.trim()) {
+            e.preventDefault();
+            valid = false;
+            if (msg && msg.classList.contains('validation-msg')) msg.style.display = 'block';
+          } else {
+            if (msg && msg.classList.contains('validation-msg')) msg.style.display = 'none';
+          }
+        });
+        return valid;
+      });
+    });

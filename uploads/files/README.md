@@ -1,0 +1,1 @@
+# Directory where files of posts will be stored

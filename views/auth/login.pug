@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:center; min-height:100vh;")
+    .background(style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('/images/favicon.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    .w3-card-4(style="position:relative; z-index:1; width:400px; padding:30px; border-radius:12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background:#ffffff;")
+      
+      a(
+        href="javascript:history.back()",
+        style="position:absolute; top:20px; left:25px; color:#008080; font-size:0.9rem; text-decoration:none; font-weight:500;") Go back
+
+      .header(style="text-align:center; margin-bottom:20px;")
+        h2(style="color:#008080; font-family: 'Segoe UI', sans-serif;") Login
+        p(style="color:#666; font-size:0.9rem; margin-top:5px;") Enter your credentials to access your account
+
+      if success
+        .w3-panel(style="background:#e6f7f7; color:#006666; border-left:5px solid #008080; padding:10px; margin-bottom:15px; border-radius:6px; text-align:center;")
+          | Account created successfully.
+
+      form#loginForm(method="POST" action="/auth/login")
+        .form-group(style="margin-bottom:15px;")
+          label(for="_id", style="font-weight:600;") Username
+          input.w3-input(type="text", id="_id", name="_id", placeholder="Enter your username", required, value=(usernameProvided || ''), style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:1rem;")
+        
+        .form-group(style="margin-bottom:15px;")
+          label(for="password", style="font-weight:600;") Password
+          input.w3-input(type="password", id="password", name="password", placeholder="Enter your password", required, style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:1rem;")
+        
+          input(type="hidden", name="redirectURL", value=redirectURL || '/')
+
+        p#loginError(style="display:none; color:#b00020; font-size:0.9rem; margin-bottom:10px; text-align:center; font-weight:500;") Invalid username or password.
+
+        button.w3-button(type="submit", style="width:100%; padding:12px; background:#008080; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; transition: background 0.3s;") Login
+
+        if error
+          p(style="color:red; text-align:center")= error
+
+        p(style="text-align:center; margin-top:15px; font-size:0.85rem; color:#555;")
+          | Don't have an account?
+          a(href="/users/create" style="color:#4caf50; text-decoration:underline; margin-left:5px;") Create account here
+
+      hr(style="margin:25px 0; border-color:#eee;")
+
+      p(style="text-align:center; font-size:0.85rem; color:#aaa;") @afbc04

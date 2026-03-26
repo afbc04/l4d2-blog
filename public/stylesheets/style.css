@@ -1,0 +1,87 @@
+/* Esconde o checkbox real */
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+/* Caixa falsa */
+.checkbox-box {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s;
+}
+
+/* Cor e check quando marcado */
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-box {
+  background-color: #008080; /* cor quando checked */
+  border-color: #008080;
+}
+
+.checkbox-box::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+/* Mostra o “check” */
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-box::after {
+  opacity: 1;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 18px;
+}
+
+.nav-icons a {
+  position: relative;
+  color: #777;
+  font-size: 1.5rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav-icons a:hover {
+  color: #005f5f;
+  transform: scale(1.2);
+}
+
+/* Tooltip */
+.nav-icons a::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+/* Mostrar tooltip */
+.nav-icons a:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.nav-icons a.active {
+  color: #008080;
+  transform: scale(1.2);
+}

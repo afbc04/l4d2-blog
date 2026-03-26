@@ -1,0 +1,56 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:40px 0; gap:20px;")
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/uminho.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; justify-content:space-between; align-items:center;")
+      div.nav-icons
+        a(href="/" data-tooltip="Home")
+          i.fa-solid.fa-house
+        a(href="/info" data-tooltip="Info")
+          i.fa-solid.fa-circle-question
+        a(href="/about" class="active" data-tooltip="About")
+          i.fa-solid.fa-circle-info
+        a(href="/users" data-tooltip="People")
+          i.fa-solid.fa-users
+        a(href="/birthdays" data-tooltip="Birthdays")
+          i.fa-solid.fa-cake-candles
+        a(href="https://github.com/afbc04/l4d2-blog" target="_blank" data-tooltip="GitHub")
+          i.fa-brands.fa-github
+        if user
+          if user.rank == "A"
+            a(href="/users/get-registration-token" data-tooltip="Create Registration Code")
+              i.fa-solid.fa-ticket
+
+      div(style="display:flex; gap:10px; align-items:center;")
+        if user
+          div(style="display:flex; align-items:center; gap:10px;")
+            a(href=`/users/details/${user._id}`, style="font-weight:500; font-size:1rem; color:#444; text-decoration:none;", onmouseover="this.style.textDecoration='underline'", onmouseout="this.style.textDecoration='none'")= user._id
+            img(src=user.profilePicture || '/images/panado.jpg', style="width:32px; height:32px; border-radius:50%;")
+            a(href="/auth/logout", style="color:#666; font-size:0.85rem; text-decoration:none;", onmouseover="this.style.textDecoration='underline'", onmouseout="this.style.textDecoration='none'") 
+              i.fa-solid.fa-door-open
+        else
+          div(style="display:flex; gap:12px; align-items:center;")
+            a(href="/users/create", style="padding:6px 14px; background:#f0f0f0; color:#333; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;") Create account
+            a(href="/auth/login", style="padding:6px 14px; background:#008080; color:#fff; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;") Login
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:30px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; flex-direction:column; gap:20px;")
+      
+      h1(style="color:#008080; margin-bottom:15px;") About This Blog
+
+      p(style="font-size:0.95rem; color:#444; line-height:1.7;")
+        | Welcome to our community blog! Here you can share your thoughts, read posts from others, and stay in touch with people we meet.
+
+      p(style="font-size:0.95rem; color:#444; line-height:1.7;")
+        | This platform was created by and for members of 
+        a(href="https://store.steampowered.com/app/550/Left_4_Dead_2/", target="_blank", style="color:#008080; text-decoration:none;") Left 4 Dead 2 
+        | Group.
+
+      h2(style="color:#008080; margin:20px 0 10px 0;") Our Mission
+
+      p(style="font-size:0.95rem; color:#444; line-height:1.7;")
+        | We aim to provide a safe, friendly, secure, private, and engaging environment where users can share their experiences and knowledge freely. 
+      
+      p(style="font-size:0.95rem; color:#444; line-height:1.7;")
+        | Your contributions help make this community vibrant and informative.

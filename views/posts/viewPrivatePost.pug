@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:center; min-height:100vh;")
+    .background(style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:400px; padding:30px; border-radius:12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background:#ffffff;")
+      
+      .header(style="text-align:center; margin-bottom:20px;")
+        h2(style="color:#008080; font-family: 'Segoe UI', sans-serif;") Private Post
+        p(style="color:#666; font-size:0.9rem; margin-top:5px;") You must be logged in or request the author to make this post public.
+
+        p(style="text-align:center; margin-top:15px; font-size:0.85rem; color:#555;")
+          | Have an account?
+          a(href=`/auth/login?redirectURL=/posts/view/${post._id}` style="color:#4caf50; text-decoration:underline; margin-left:5px;") Login here
+
+      .w3-center(style="margin-top:20px; display:flex; justify-content:center; gap:10px;")
+        a.w3-button(
+            href="/",
+            style="padding:6px 12px; background:#bbb; color:white; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; transition: background 0.3s;"
+            onmouseover="this.style.background='#999'"
+            onmouseout="this.style.background='#bbb'"
+        ) Back to Main Page
+
+        a.w3-button(
+            href="javascript:history.back()",
+            style="padding:6px 12px; background:#008080; color:white; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; transition: background 0.3s;"
+            onmouseover="this.style.background='#999'"
+            onmouseout="this.style.background='#008080'"
+        ) Go Back
+
+      hr(style="margin:25px 0; border-color:#eee;")
+
+      p(style="text-align:center; font-size:0.85rem; color:#aaa;") @afbc04

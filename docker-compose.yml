@@ -1,0 +1,30 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: l4d2-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    volumes:
+      - mongo-data:/data/db
+    command: ["mongod", "--quiet", "--logpath", "/var/log/mongodb/mongod.log", "--logappend"]
+    logging:
+      driver: "none"
+
+  api:
+    build: .
+    container_name: l4d2-api
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/usr/src/app
+    command: npm start
+
+volumes:
+  mongo-data:

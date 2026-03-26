@@ -1,0 +1,254 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:50px 0;")
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:1000px; padding:50px; border-radius:12px; box-shadow: 0 12px 35px rgba(0,0,0,0.25); background:#ffffff;")
+
+      a(
+        href="javascript:history.back()",
+        style="position:absolute; top:20px; left:25px; color:#008080; font-size:0.9rem; text-decoration:none; font-weight:500;") Go back
+
+      a(
+        href="/",
+        style="position:absolute; top:20px; left:100px; color:#555; font-size:0.9rem; text-decoration:none; font-weight:500;") Main Page
+
+      .header(style="text-align:center; margin-bottom:30px;")
+        h2(style="color:#008080; font-family:'Segoe UI', sans-serif; font-size:1.8rem;") Publish Post
+        p(style="color:#666; font-size:0.95rem; margin-top:5px;") Share your thoughts and memories with others
+
+      form#postCreateForm(action="/posts/create" method="POST" onsubmit="syncEditor()" enctype="multipart/form-data")
+        .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
+
+          label
+            b Title
+            span(style="color:red") * 
+          input.w3-input.w3-round(type="text" name="title" placeholder="What is the subject?" required)
+          span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Title is required.
+
+          label.w3-text-gray(style="margin-top:15px;")
+            b Description (optional)
+          textarea#wmd-editor.w3-input.w3-border(name="content" rows="20" placeholder="Write your post using Markdown...") 
+
+          p(style="text-align:center; margin-top:15px; font-size:0.85rem; color:#555;")
+            | This text editor supports and uses
+            a(href="https://www.markdownguide.org/basic-syntax/" target="_blank" style="color:#4caf50; text-decoration:underline; margin-left:5px;") Markdown
+            | . Maybe it's a good idea to check it out.
+
+          label(style="margin-top:15px;")
+            b Tags
+          input#wmd-tags.w3-input.w3-round(type="text" name="tags" pattern="[A-Za-z0-9\-.]+" placeholder="Enter tags here, separating them with whitespace")
+
+          label.custom-checkbox(style="margin-top:10px; display:flex; align-items:center; gap:10px; cursor:pointer;")
+            input(type="checkbox" name="isPublic")
+            span.checkbox-box
+            | Allow this publication to be visible by outsiders
+
+          fieldset(style="margin-top:15px; border:none; display:flex; flex-direction:column; gap:10px;")
+            legend.w3-text-gray(style="font-weight:bold; font-size:1rem; margin-bottom:10px;") Attach Files (optional)
+            .files-wrapper
+
+          label.custom-checkbox(style="margin-top:10px; display:flex; align-items:center; gap:10px; cursor:pointer;")
+            input(type="checkbox" name="disableComments")
+            span.checkbox-box
+            | Disable comments
+
+          if error
+            p(style="color:red; text-align:center; margin-top:10px; font-weight:500")= error
+
+          .w3-margin-top.w3-center
+            button.w3-button(type="submit" style="width:50%; padding:12px; background:#008080; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; transition: background 0.3s;")
+              | Submit Post
+
+  link(rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css")
+  script(src="https://unpkg.com/easymde/dist/easymde.min.js")
+
+  script.
+    const easyMDE = new EasyMDE({
+      element: document.getElementById("wmd-editor"),
+      spellChecker: false,
+      placeholder: "Write your post using Markdown...",
+      autosave: { enabled: true, uniqueId: "post_content", delay: 1000 },
+      renderingConfig: { singleLineBreaks: false, codeSyntaxHighlighting: true },
+      toolbar: [
+        "bold","italic","heading","|",
+        "quote","unordered-list","ordered-list","|",
+        "link","image","|",
+        "preview","side-by-side","fullscreen"
+      ]
+    });
+
+    function syncEditor() {
+      document.getElementById("wmd-editor").value = easyMDE.value();
+      return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('postCreateForm');
+
+      form.addEventListener('submit', function(e) {
+        syncEditor(); // coloca o markdown no textarea
+
+        const titleField = form.querySelector('[name="title"]');
+        if (!titleField.value.trim()) {
+          e.preventDefault();
+          alert("Title is required");
+          return false;
+        }
+
+        // não bloquear se o content estiver vazio (opcional)
+        return true;
+      });
+    });
+
+    const filesWrapper = document.querySelector('.files-wrapper');
+
+    function createFileBox() {
+      const box = document.createElement('div');
+      box.className = 'file-box';
+      box.style.display = 'flex';
+      box.style.flexDirection = 'column';
+      box.style.border = '1px solid #ccc';
+      box.style.borderRadius = '6px';
+      box.style.padding = '8px';
+      box.style.marginTop = '8px';
+      box.style.gap = '6px';
+
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.name = 'attachments';
+      input.className = 'w3-input file-input';
+      box.appendChild(input);
+
+      const lowerDiv = document.createElement('div');
+      lowerDiv.style.display = 'flex';
+      lowerDiv.style.alignItems = 'center';
+      lowerDiv.style.gap = '10px';
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.name = 'attachmentNames';
+      nameInput.placeholder = 'File name';
+      nameInput.className = 'w3-input w3-round';
+      nameInput.style.flex = '1';
+      lowerDiv.appendChild(nameInput);
+
+      const previewDiv = document.createElement('div');
+      previewDiv.className = 'file-preview';
+      previewDiv.style.display = 'flex';
+      previewDiv.style.alignItems = 'center';
+      previewDiv.style.gap = '10px';
+      lowerDiv.appendChild(previewDiv);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.textContent = '×';
+      removeBtn.style.background = 'rgba(170,170,170,0.8)';
+      removeBtn.style.color = 'white';
+      removeBtn.style.border = 'none';
+      removeBtn.style.borderRadius = '50%';
+      removeBtn.style.width = '24px';
+      removeBtn.style.height = '24px';
+      removeBtn.style.cursor = 'pointer';
+      removeBtn.addEventListener('click', () => {
+        if (filesWrapper.children.length > 1) filesWrapper.removeChild(box);
+      });
+      lowerDiv.appendChild(removeBtn);
+
+      box.appendChild(lowerDiv);
+      filesWrapper.appendChild(box);
+
+      let imgModal = document.getElementById('imgModal');
+      if (!imgModal) {
+        imgModal = document.createElement('div');
+        imgModal.id = 'imgModal';
+        imgModal.style.display = 'none';
+        imgModal.style.position = 'fixed';
+        imgModal.style.top = '0';
+        imgModal.style.left = '0';
+        imgModal.style.width = '100%';
+        imgModal.style.height = '100%';
+        imgModal.style.background = 'rgba(0,0,0,0.8)';
+        imgModal.style.justifyContent = 'center';
+        imgModal.style.alignItems = 'center';
+        imgModal.style.zIndex = '9999';
+        imgModal.style.cursor = 'zoom-out';
+
+        const modalImg = document.createElement('img');
+        modalImg.style.maxWidth = '90%';
+        modalImg.style.maxHeight = '90%';
+        modalImg.style.borderRadius = '8px';
+        imgModal.appendChild(modalImg);
+
+        imgModal.addEventListener('click', () => {
+          imgModal.style.display = 'none';
+        });
+
+        document.body.appendChild(imgModal);
+      }
+
+      input.addEventListener('change', () => {
+        previewDiv.innerHTML = '';
+        if (!input.files.length) return;
+        const fileObj = input.files[0];
+
+        if (fileObj.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.style.width = '60px';
+          img.style.height = '60px';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '4px';
+          img.src = URL.createObjectURL(fileObj);
+          img.style.cursor = 'zoom-in';
+
+          img.addEventListener('click', () => {
+            imgModal.querySelector('img').src = img.src;
+            imgModal.style.display = 'flex';
+          });
+
+          previewDiv.appendChild(img);
+        } else {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(fileObj);
+          link.download = fileObj.name;
+          link.textContent = fileObj.name;
+          link.style.fontSize = '0.9rem';
+          link.style.color = '#008080';
+          previewDiv.appendChild(link);
+        }
+      });
+    }
+
+    createFileBox();
+
+    filesWrapper.addEventListener('change', (e) => {
+      const lastBox = filesWrapper.lastElementChild;
+      const input = lastBox.querySelector('input[type="file"]');
+      if (input.files.length && !lastBox.nextElementSibling) createFileBox();
+    });
+
+    const tagsInput = document.getElementById('wmd-tags');
+    const tagsContainer = document.createElement('div');
+    tagsContainer.style.display = 'flex';
+    tagsContainer.style.flexWrap = 'wrap';
+    tagsContainer.style.gap = '6px';
+    tagsContainer.style.marginTop = '6px';
+    tagsInput.insertAdjacentElement('afterend', tagsContainer);
+
+    tagsInput.addEventListener('input', () => {
+      tagsInput.value = tagsInput.value.replace(/[^A-Za-z0-9\-. ]/g, '');
+      tagsContainer.innerHTML = '';
+      const tags = tagsInput.value.split(' ').map(t => t.trim()).filter(t => t !== '');
+      tags.forEach(tag => {
+        const badge = document.createElement('span');
+        badge.textContent = tag;
+        badge.style.background = '#ff4d4d';
+        badge.style.color = 'white';
+        badge.style.fontSize = '0.85rem';
+        badge.style.padding = '2px 6px';
+        badge.style.borderRadius = '4px';
+        badge.style.display = 'inline-block';
+        tagsContainer.appendChild(badge);
+      });
+    });

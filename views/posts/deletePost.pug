@@ -1,0 +1,36 @@
+extends ../layout
+
+
+block content
+
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:center; min-height:100vh;")
+    .background(style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:450px; padding:30px; border-radius:12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background:#ffffff;")
+      
+      .header(style="text-align:center; margin-bottom:20px;")
+        h2(style="color:#f44336; font-family: 'Segoe UI', sans-serif;") Delete Post Nº#{post._id}
+
+        if deletionUser == post.userID
+          p(style="color:#666; font-size:0.9rem; margin-top:5px;") You're going to delete your own post
+        else
+          p(style="color:#666; font-size:0.9rem; margin-top:5px;") You're going to delete <strong>#{post.userID}</strong> post
+
+      form#terminateForm(method="POST", action=`/posts/delete/${post._id}`)
+        label.w3-text-gray
+          b Reason for deletion (optional)
+        textarea.w3-input.w3-round(name="deletionReason", placeholder="Describe why you are deleting this post..." , rows="2", style="margin-top:5px; resize:none;")
+
+        .confirmation(style="margin-top:20px; text-align:center;")
+          p(style="color:#666; font-size:0.9rem; margin-top:5px;") This action is <strong>irreversible</strong>.
+
+          .w3-center(style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;")
+            a.w3-button.w3-round(
+              href=`/posts/view/${post._id}`,
+              style="padding:10px 18px; background:#607d8b; color:white;"
+            ) Cancel
+
+            button.w3-button.w3-round(
+              type="submit",
+              style="padding:10px 18px; background:#f44336; color:white;"
+            ) Delete post

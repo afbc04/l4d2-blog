@@ -1,0 +1,154 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:50px 0;")
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:1000px; padding:50px; border-radius:12px; box-shadow: 0 12px 35px rgba(0,0,0,0.25); background:#ffffff;")
+      
+      a(href="javascript:history.back()", style="position:absolute; top:20px; left:25px; color:#008080; font-size:0.9rem; text-decoration:none; font-weight:500;") Go back
+      a(href="/", style="position:absolute; top:20px; left:100px; color:#555; font-size:0.9rem; text-decoration:none; font-weight:500;") Main Page
+
+      .header(style="text-align:center; margin-bottom:30px;")
+        h2(style="color:#008080; font-family:'Segoe UI', sans-serif; font-size:1.8rem;") Edit Post Nº#{post._id}
+        p(style="color:#666; font-size:0.95rem; margin-top:5px;") Edit some informations about your post, such as tags, visibility and comments
+
+      form#postEditForm(action=`/posts/edit/${post._id}` method="POST")
+        .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
+
+          label.w3-text-gray
+            b Title
+          input.w3-input.w3-round(type="text" name="title" value=post.title readonly)
+
+          if post.content && post.content.trim()
+            label.w3-text-gray(style="margin-top:15px;")
+                b Description
+            textarea#wmd-editor(name="content")= post.content
+
+          p(style="text-align:center; margin-top:10px; font-size:0.85rem; color:#555;")
+            | Content and attached files cannot be modified.
+
+          label(style="margin-top:15px;")
+            b Tags
+          input#wmd-tags.w3-input.w3-round(type="text" name="tags" value=post.tags.join(' ') pattern="[A-Za-z0-9\-.]+" placeholder="Enter tags here, separating them with whitespace")
+
+          label.custom-checkbox(style="margin-top:10px; display:flex; align-items:center; gap:10px; cursor:pointer;")
+            input(type="checkbox" name="isPublic" checked=post.public)
+            span.checkbox-box
+            | Allow this publication to be visible by outsiders
+
+          if post.files && post.files.length
+            .w3-card-4(style="padding:25px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03); margin-bottom:20px;")
+                label.w3-text-gray(style="font-weight:bold; margin-bottom:10px; display:block; font-size:1rem;") Attachments
+
+                ul(style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px;")
+                    each file in post.files
+                        - const ext = file.pathVirtual.split('.').pop().toLowerCase();
+                        li(style="display:flex; align-items:center; gap:12px; padding:8px 12px; background:#fff; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.05);")
+                            
+                            if ['png','jpg','jpeg','gif','webp'].includes(ext)
+                                img(src=file.pathVirtual, style="width:80px; height:80px; object-fit:cover; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.1); cursor:zoom-in;")
+                            else if ['mp4','webm','ogg'].includes(ext)
+                                video(controls, style="width:120px; height:80px; border-radius:4px; object-fit:cover;")
+                                    source(src=file.pathVirtual, type='video/' + ext)
+                            else
+                                div(style="width:80px; height:80px; display:flex; justify-content:center; align-items:center; background:#fff; border-radius:4px; color:#fff; font-weight:bold; font-size:0.8rem; text-align:center;")
+
+                            span(style="flex:1; font-weight:500; color:#444; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;")
+                                a(href=file.pathVirtual, target="_blank" style="text-decoration:none; color:#008080;")= file.fileName
+
+          label.custom-checkbox(style="margin-top:10px; display:flex; align-items:center; gap:10px; cursor:pointer;")
+            input(type="checkbox" name="disableComments" checked=!post.allowComments)
+            span.checkbox-box
+            | Disable comments
+
+          if error
+            p(style="color:red; text-align:center; margin-top:10px; font-weight:500")= error
+
+          .w3-margin-top.w3-center
+            button.w3-button(type="submit" style="width:50%; padding:12px; background:#008080; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer; transition: background 0.3s;")
+              | Update Post
+
+  link(rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css")
+  script(src="https://unpkg.com/easymde/dist/easymde.min.js")
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const content = `!{post.content || ''}`;
+        const textarea = document.getElementById("wmd-editor");
+
+        if (textarea) {
+            const lineCount = content.split('\n').length + 1;
+            const easyMDE = new EasyMDE({
+            element: textarea,
+            initialValue: content,
+            minHeight: "24px",
+            maxHeight: (lineCount * 24) + "px",
+            spellChecker: false,
+            autoDownloadFontAwesome: false,
+            toolbar: ["bold","italic","heading","|","quote","unordered-list","ordered-list","|","link","image","|","preview","side-by-side","fullscreen"],
+            renderingConfig: { singleLineBreaks: false, codeSyntaxHighlighting: true },
+            status: false,
+            readOnly: true
+            });
+
+            easyMDE.codemirror.on("beforeChange", (instance, change) => {
+            if (change.origin !== "setValue") change.cancel();
+            });
+
+            easyMDE.togglePreview();
+        }
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        document.querySelectorAll('.preview-image').forEach(img => {
+            img.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            modalImg.src = img.src;
+            });
+        });
+
+        if (modal) {
+            modal.addEventListener('click', () => { modal.style.display = 'none'; });
+        }
+
+        const tagsInput = document.getElementById('wmd-tags');
+        if (tagsInput) {
+            let tagsContainer = document.createElement('div');
+            tagsContainer.style.display = 'flex';
+            tagsContainer.style.flexWrap = 'wrap';
+            tagsContainer.style.gap = '6px';
+            tagsContainer.style.marginTop = '6px';
+            tagsInput.insertAdjacentElement('afterend', tagsContainer);
+
+            function renderTags() {
+            tagsContainer.innerHTML = '';
+            const tags = tagsInput.value
+                .split(' ')
+                .map(t => t.trim())
+                .filter(t => t !== '');
+            
+            tags.forEach(tag => {
+                const badge = document.createElement('span');
+                badge.textContent = tag;
+                badge.style.background = '#ff4d4d';
+                badge.style.color = 'white';
+                badge.style.fontSize = '0.85rem';
+                badge.style.padding = '2px 6px';
+                badge.style.borderRadius = '4px';
+                badge.style.display = 'inline-block';
+                tagsContainer.appendChild(badge);
+            });
+            }
+
+            tagsInput.addEventListener('input', () => {
+            tagsInput.value = tagsInput.value.replace(/[^A-Za-z0-9\-. ]/g, '');
+            renderTags();
+            });
+
+            renderTags();
+        }
+
+    });

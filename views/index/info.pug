@@ -1,0 +1,231 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:40px 0; gap:20px;")
+    
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/uminho.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; justify-content:space-between; align-items:center;")
+
+      div.nav-icons
+        a(href="/" data-tooltip="Home")
+          i.fa-solid.fa-house
+
+        a(href="/faq" class="active" data-tooltip="Info")
+          i.fa-solid.fa-circle-question
+
+        a(href="/about" data-tooltip="About")
+          i.fa-solid.fa-circle-info
+
+        a(href="/users" data-tooltip="People")
+          i.fa-solid.fa-users
+
+        a(href="/birthdays" data-tooltip="Birthdays")
+          i.fa-solid.fa-cake-candles
+
+        a(href="https://github.com/afbc04/l4d2-blog" target="_blank" data-tooltip="GitHub")
+          i.fa-brands.fa-github
+
+        if user
+          if user.rank == "A"
+            a(href="/users/get-registration-token" data-tooltip="Create Registration Code")
+              i.fa-solid.fa-ticket
+
+      div(style="display:flex; gap:10px; align-items:center;")
+        if user
+          div(style="display:flex; align-items:center; gap:10px;")
+
+            a(
+              href=`/users/details/${user._id}`
+              style="font-weight:500; font-size:1rem; color:#444; text-decoration:none;"
+              onmouseover="this.style.textDecoration='underline'"
+              onmouseout="this.style.textDecoration='none'"
+            )= user._id
+
+            img(
+              src=user.profilePicture || '/images/panado.jpg'
+              style="width:32px; height:32px; border-radius:50%;"
+            )
+
+            a(
+              href="/auth/logout"
+              style="color:#666; font-size:0.85rem; text-decoration:none;"
+              onmouseover="this.style.textDecoration='underline'"
+              onmouseout="this.style.textDecoration='none'"
+            ) 
+              i.fa-solid.fa-door-open
+        else
+          div(style="display:flex; gap:12px; align-items:center;")
+            a(href="/users/create", style="padding:6px 14px; background:#f0f0f0; color:#333; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;")
+              | Create account
+            
+            a(href="/auth/login", style="padding:6px 14px; background:#008080; color:#fff; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;")
+              | Login
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:30px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; flex-direction:column; gap:20px;")
+
+      h2(style="color:#008080;") Information
+
+        .faq-list(style="margin-top:20px;display:flex; flex-direction:column; gap:15px;")
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 1. Account Registration
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              p To create an account, a valid 
+                b registration token 
+                |  is required.
+              ul
+                li Tokens are issued only by 
+                  b administrators
+                li Each token can be used 
+                  b once only
+                li Users are responsible for maintaining the confidentiality of their credentials
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 2. Security & Privacy
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              ul
+                li No reliance on third-party hosting providers
+                li Only the server owner has infrastructure access
+                li All connections use 
+                  b SSL/TLS encryption
+                li Passwords are stored using 
+                  b salted hashing
+                li Only essential data is required
+                li Optional personal info is not mandatory
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 3. Data Transparency
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              p To promote transparency:
+              ul
+                li All stored information (except 
+                  b email 
+                  |  and 
+                  b password
+                  | ) is visible to registered users
+              p Hidden from unregistered users:
+              ul
+                li User details (except usernames)
+                li Private posts and files
+                li Comments made by registered users
+                li Birthdates
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 4. User Responsibilities
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              ul
+                li Use the server responsibly
+                li Respect other users
+                li Follow applicable laws
+                li Label explicit content clearly
+              p
+                b Users are solely responsible 
+                |  for any content they upload or share.
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 5. Prohibited Activities
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              ul
+                li Harassment or abuse
+                li Illegal content
+                li Server exploitation attempts
+                li Actions compromising platform integrity
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 6. Administrator Permissions
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              p Administrators can:
+              ul
+                li Allow creation of accounts
+                li Delete posts
+                li Terminate accounts
+                li Generate registration tokens
+                li Reset passwords
+              p However:
+              ul
+                li Cannot edit user-generated content
+                li Actions must be justified
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 7. Availability & Data Safety
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              ul
+                li Downtime may occur due to maintenance
+                li Data recovery is not guaranteed
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 8. Frequently Asked Questions
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              
+              p
+                b Does the server know my password?
+              p No. Passwords are stored using hashed values.
+
+              p
+                b Is my data safe?
+              p Reasonable security measures are in place, but no system is risk-free.
+
+              p
+                b Can administrators see my private data?
+              p Only what is necessary for system operation. Rest of information is already visible.
+
+              p
+                b What happens if I break the rules?
+              p Your content may be removed and your account terminated.
+
+              p
+                b Can I recover my password?
+              p Administrators can reset it if needed.
+
+              p
+                b Can I suggest changes?
+              p Yes. Users are encouraged to suggest improvements, report issues, or propose new features to help improve the platform.
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 9. Changes to Terms
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              p Existing Terms will maintain over time.
+              p Any change will be reported here.
+
+          .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
+            div.faq-question(style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;")
+              b(style="color:#008080; font-size:1.25rem;") 10. Contact
+              i.fa-solid.fa-chevron-down
+            div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
+              p For support or questions, contact the 
+                b server administrator.
+
+  script.
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const answer = question.nextElementSibling;
+        const icon = question.querySelector('i');
+
+        if (answer.style.maxHeight && answer.style.maxHeight !== '0px') {
+          answer.style.maxHeight = '0';
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });

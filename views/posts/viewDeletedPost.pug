@@ -1,0 +1,65 @@
+extends ../layout
+
+block content
+
+  .login-wrapper(style="position:relative; display:flex; justify-content:center; align-items:center; min-height:100vh;")
+    .background(style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+    
+    .w3-card-4(style="position:relative; z-index:1; width:500px; padding:30px; border-radius:12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background:#ffffff;")
+      
+      .header(style="text-align:center; margin-bottom:20px;")
+        h2(style="color:#008080; font-family:'Segoe UI', sans-serif;")
+          | Post Nº#{post._id} deleted
+
+        p(style="color:#666; font-size:0.95rem; margin-top:8px;")
+          | This post has been permanently removed.
+
+      .w3-card-4(style="margin-top:20px;padding:25px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
+        legend(style="font-weight:bold; font-size:1.1rem; margin-bottom:15px; color:#444;")
+
+        .w3-margin-bottom
+          label.w3-text-gray
+            b Deleted by
+          .w3-input.w3-round(style="margin-top:5px; background:#fff;")
+            if post.deletedBy
+              a(href=`/users/details/${post.deletedBy}`)= post.deletedBy
+            else
+              span(style="color:#999; padding:4px 10px;") Unknown
+
+        - const d = new Date(post.deletedAt)
+        - const formatted = d.toLocaleString('pt-PT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+
+        .w3-margin-bottom
+          label.w3-text-gray
+            b Date
+          input.w3-input.w3-round(
+            type="text",
+            value=formatted,
+            readonly,
+            style="margin-top:5px; background:#fff;"
+          )
+
+        .w3-margin-bottom
+          label.w3-text-gray
+            b Reason
+          .w3-input.w3-round(style="margin-top:5px; background:#fff;")
+            if post.deletedReason && post.deletedReason.trim()
+              | #{post.deletedReason}
+            else
+              span(style="color:#999; padding:4px 10px;")
+                | No reason provided
+
+      .w3-center(style="margin-top:20px; display:flex; justify-content:center; gap:10px;")
+        a.w3-button(
+            href="/",
+            style="padding:6px 12px; background:#bbb; color:white; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; transition: background 0.3s;"
+            onmouseover="this.style.background='#999'"
+            onmouseout="this.style.background='#bbb'"
+        ) Back to Main Page
+
+        a.w3-button(
+            href="javascript:history.back()",
+            style="padding:6px 12px; background:#008080; color:white; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; transition: background 0.3s;"
+            onmouseover="this.style.background='#999'"
+            onmouseout="this.style.background='#008080'"
+        ) Go Back

@@ -1,0 +1,211 @@
+extends ../layout
+
+block content
+  .login-wrapper(style="position:relative; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:40px 0; gap:20px;")
+    
+    .background(style="position:fixed; top:0; left:0; width:100%; height:100vh; background:url('/images/lisboa.jpg') center/cover no-repeat; filter:blur(8px); z-index:0;")
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:15px 25px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; justify-content:space-between; align-items:center;")
+
+      div.nav-icons
+        a(href="/" class="active" data-tooltip="Home")
+          i.fa-solid.fa-house
+
+        a(href="/info" data-tooltip="Info")
+          i.fa-solid.fa-circle-question
+
+        a(href="/about" data-tooltip="About")
+          i.fa-solid.fa-circle-info
+
+        a(href="/users" data-tooltip="People")
+          i.fa-solid.fa-users
+
+        a(href="/birthdays" data-tooltip="Birthdays")
+          i.fa-solid.fa-cake-candles
+
+        a(href="https://github.com/afbc04/l4d2-blog" target="_blank" data-tooltip="GitHub")
+          i.fa-brands.fa-github
+
+        if user
+          if user.rank == "A"
+            a(href="/users/get-registration-token" data-tooltip="Create Registration Code")
+              i.fa-solid.fa-ticket
+
+      div(style="display:flex; gap:10px; align-items:center;")
+        if user
+          div(style="display:flex; align-items:center; gap:10px;")
+
+            a(
+              href=`/users/details/${user._id}`
+              style="font-weight:500; font-size:1rem; color:#444; text-decoration:none;"
+              onmouseover="this.style.textDecoration='underline'"
+              onmouseout="this.style.textDecoration='none'"
+            )= user._id
+
+            img(
+              src=user.profilePicture || '/images/panado.jpg'
+              style="width:32px; height:32px; border-radius:50%;"
+            )
+
+            a(
+              href="/auth/logout"
+              style="color:#666; font-size:0.85rem; text-decoration:none;"
+              onmouseover="this.style.textDecoration='underline'"
+              onmouseout="this.style.textDecoration='none'"
+            ) 
+              i.fa-solid.fa-door-open
+        else
+          div(style="display:flex; gap:12px; align-items:center;")
+            a(href="/users/create", style="padding:6px 14px; background:#f0f0f0; color:#333; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;")
+              | Create account
+            
+            a(href="/auth/login", style="padding:6px 14px; background:#008080; color:#fff; text-decoration:none; border-radius:6px; font-weight:500; font-size:0.95rem; transition:background 0.2s;")
+              | Login
+
+    .w3-card-4(style="position:relative; z-index:1; width:900px; padding:30px; border-radius:12px; background:rgba(255,255,255,0.9); display:flex; flex-direction:column; gap:20px;")
+
+      if user
+        .create-post-cta(style="padding:8px 12px; border-radius:10px; cursor:pointer;") 
+          a(href="/posts/create", style="color:white; background:#008080; padding:6px 10px; border-radius:6px; font-size:0.9rem; text-decoration:none;") 
+            i.fa-solid.fa-plus(style="font-size:0.8rem; opacity:0.8;margin-right:5px;") 
+            | Create Post 
+          span(style="margin-left:10px;color:#008080; font-weight:500; font-size:0.9rem;") Want to share something?
+
+      div(style="display:flex; justify-content:space-between; align-items:center;")
+        if posts && posts.length > 0
+          h2(style="color:#008080; margin:0;") Recent Posts
+          
+          label.custom-checkbox(style="margin-top:6px; display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#666; cursor:pointer;")
+            input#deletedPosts(type="checkbox" style="width:16px; height:16px; accent-color:#008080;")
+            span.checkbox-box
+            | Include deleted posts
+        else
+          h2(style="color:#008080; margin:0;")
+          
+          label.custom-checkbox(style="margin-top:6px; display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#666; cursor:pointer;")
+            input#deletedPosts(type="checkbox" style="width:16px; height:16px; accent-color:#008080;")
+            span.checkbox-box
+            | Include deleted posts
+
+      #postsContainer
+        if posts && posts.length > 0
+          each p in posts
+            .post-card(
+              data-id=p._id
+              style=`cursor:pointer;margin-bottom:20px; padding:20px; border-radius:12px; display:flex; flex-direction:column; gap:12px; box-shadow:0 8px 25px rgba(0,0,0,0.12); background:${p.seen || p.deleted == true || !user ? '#fafafa' : '#fffbe6'}; border: ${p.seen || p.deleted == true || !user ? 'none' : '1px solid #ffe58f'};`
+              onclick=`window.location='/posts/view/${p._id}'`
+            )
+              if p.deleted == false
+                div(style="display:flex; align-items:center; gap:10px;")
+                  b(style="color:#008080;")= p.title
+
+                  if p.pinned
+                    div(style="color:#666;")
+                      i.fa-solid.fa-thumbtack
+
+                  a(
+                    href=`/users/details/${p.userID}`, 
+                    style="font-size:0.8rem; color:#666; text-decoration:none;", 
+                    onmouseover="this.style.textDecoration='underline'", 
+                    onmouseout="this.style.textDecoration='none'"
+                  ) by #{p.userID}
+
+                  if p.tags && p.tags.length
+                    each tag in p.tags
+                      span(style="background:#ff4d4d; color:white; font-size:0.7rem; padding:2px 6px; border-radius:4px;")= tag
+
+                  span(style="margin-left:auto; font-size:0.8rem; color:#666;")
+                    = new Date(p.createdAt).toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+
+                div(style="display:flex; justify-content:space-between; font-size:0.8rem; color:#666;")
+
+                  div(style="display:flex; gap:10px;")
+
+                    if p.wordCount > 0
+                      span 
+                        i.fa-solid.fa-pencil
+                        |  #{p.wordCount} words
+
+                    if p.fileCount > 0
+                      span 
+                        i.fa-solid.fa-paperclip 
+                        |  #{p.fileCount} files
+
+                    if p.commentCount > 0
+                      span 
+                        i.fa-solid.fa-message 
+                        |  #{p.commentCount} comments
+
+                    if p.viewersCount > 0
+                      span 
+                        i.fa-solid.fa-eye 
+                        |  #{p.viewersCount} viewers
+
+                  div
+
+                    if p.seen 
+                      span(style="margin-right:10px; color:#6084bd;border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
+                        i.fa-solid.fa-circle-check
+                        |  Seen
+
+                    if p.public
+                      span(style="background:#e8f5e9; color:#388e3c; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
+                        | Public
+                    else
+                      span(style="background:#ffebee; color:#d32f2f; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
+                        | Private
+              else 
+                div(style="display:flex; align-items:center; gap:10px;")
+                  b(style="color:#666; text-decoration:line-through;")= p.title
+
+                  a(
+                    href=`/users/details/${p.userID}`, 
+                    style="font-size:0.8rem; color:#666; text-decoration:none;", 
+                    onmouseover="this.style.textDecoration='underline'", 
+                    onmouseout="this.style.textDecoration='none'"
+                  ) by #{p.userID}
+
+                  span(style="margin-left:auto; font-size:0.8rem; color:#666;")
+                    = new Date(p.createdAt).toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+
+                div(style="display:flex; justify-content:space-between; font-size:0.8rem; color:#666;")
+
+                  div(style="display:flex; align-items:center; gap:6px; font-size:0.8rem; color:#666; flex-wrap:wrap;")
+                    span Deleted by
+                    a(
+                      href=`/users/details/${p.deletedBy}`,
+                      style="color:#666; text-decoration:none;",
+                      onmouseover="this.style.textDecoration='underline'",
+                      onmouseout="this.style.textDecoration='none'"
+                    ) #{p.deletedBy}
+                    span at
+                    span
+                      = new Date(p.deletedAt).toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    if p.deletedReason
+                      span | Reason: 
+                        i #{p.deletedReason}
+
+                  div
+                    if p.public
+                      span(style="background:#e8f5e9; color:#388e3c; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
+                        | Public
+                    else
+                      span(style="background:#ffebee; color:#d32f2f; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
+                        | Private
+        else 
+          .empty-state(style="display:flex; justify-content:center; align-items:center; width:100%; padding:40px 0;")
+            span(style="font-size:0.9rem; color:#999; text-align:center;") No posts available yet. Be the first to create one!
+
+  script.
+    const checkbox = document.getElementById('deletedPosts');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    checkbox.checked = urlParams.get('deletedPosts') === 'true';
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        window.location.href = '/?deletedPosts=true';
+      } else {
+        window.location.href = '/';
+      }
+    });

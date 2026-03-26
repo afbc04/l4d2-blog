@@ -1,0 +1,10 @@
+.env
+.vscode/
+package-lock.json
+uploads/files/*
+!uploads/files/README.md
+uploads/profile_pictures/*
+!uploads/profile_pictures/README.md
+node_modules/
+logs/*
+!logs/README.md

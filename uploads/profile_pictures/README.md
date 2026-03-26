@@ -1,0 +1,1 @@
+# Directory where profile pictures will be stored
