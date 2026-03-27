@@ -84,6 +84,8 @@ _Edit docker compose file if you want to change port_
 This project provides a directory with testing resources to test the project.  
 Those resources are located in [experimental-data/](experimental-data/)
 
+All users password is **"s"**
+
 ### Import into Database
 
     docker cp experimental-data/database/*.json <container_id_database>:/<destination_path>
