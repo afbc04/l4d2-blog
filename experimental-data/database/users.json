@@ -1,0 +1,124 @@
+[
+    {
+        "_id": "cutie",
+        "name": "Cutie",
+        "realName": null,
+        "email": null,
+        "rank": "A",
+        "creationDate": {
+            "$date": "2026-03-26T22:36:13.106Z"
+        },
+        "location": "AT",
+        "birthDay": null,
+        "birthMonth": null,
+        "birthYear": null,
+        "createdBy": null,
+        "active": true,
+        "profilePicture": "/images/profilePicture/cutie.png",
+        "deletedBy": null,
+        "deletionDate": null,
+        "deletionReason": null,
+        "numberRegistrationToken": 0,
+        "salt": "089b4cae8e56b407e584bc5530ed5ee7ed4858fd7234717bb2951de5d9a16a77",
+        "hash": "3ee31eea84e8d6ba0ec609198e7c58c295c5f00af301b53098883fbb648c53647b48f34c005b5716465beb16ccbd4d7173162c5f80a8bbcaba85b3265488991b8b872a46a4d054f9af2986b9ec9d982cbcb9ce61e5b39c0293ed9e03931530e5882407295bc839dfa12bd4280ccfe954eac3c6d2466ed3aa78efeb73a273cdfc481715213e27b9ff54cf5798cbcc64d48d8af73461bdd5f2c6c48c310d20917e252333fc3c2602c9792d82077e8c8745161278395a74f08bda4f300a0833e5315d04ce9705013c3c92ba8e34860c20b25ea244235693527a33f0bdb191914273d15412849facd8eee5f06996649b05aa4ad84449c91c1be203901f4eecc10f974e3b3da15ddba1be78f5fea6aaf8bf046226c936be31799e1514e66a485d08f3c7080f084deaf74b34e46e0f595cbe8fb72e8998c41ea771e8da7604f41d25daa3dad3983784160f310866839798b7a867ad939d41145f2e64c596a0a2967ec4dbbd73ee5671577ea524ef7df153ea45a38bbeeec8e6db96f9bc5eb49b946792c5415b0ef55b97e08c18feb78d7e148c48cbc6f6c59f13e0c37ebb3e12c1d444c11dc1125997082a00ac17bcbe9ec5e834975b0038a55e2b2cad755c0a8456ed289e6146228ecb1c30b2efea90744abd8101cc61f049ce9d67c7520422a9b81b36d1635a3602584e1ea7efadc9928252d5b5da47abca864cf2d6f1f0351e5e58",
+        "__v": 0
+    },
+    {
+        "_id": "doggy",
+        "name": "Doggy",
+        "realName": "Bobby",
+        "email": null,
+        "rank": "U",
+        "creationDate": {
+            "$date": "2026-03-26T22:37:34.874Z"
+        },
+        "location": null,
+        "birthDay": 13,
+        "birthMonth": 8,
+        "birthYear": null,
+        "createdBy": "cutie",
+        "active": true,
+        "profilePicture": "/images/profilePicture/doggy.jpg",
+        "deletedBy": null,
+        "deletionDate": null,
+        "deletionReason": null,
+        "numberRegistrationToken": 1.774564581617E+12,
+        "salt": "d7591b900cc6b609dc1074f65fad944a5448daddd8df9ed4a562aec73fbef12c",
+        "hash": "03184ff2f7e29e328ccc7f041be0e739c11d9a706ac2a2d32300ebdb0d6a38654279447812a61d6860fa18b2ddef4623431cabdb84a47f81269a7fd74456d8e2f4300c607e3f5b99cd97c927b37afee33061afc06bd44dc0b4820de897a4f5d54fc3d8a9ed0943d0b372ddfecd85bbe7d8bb314f49898fdb8967aeda655ebea84cc2a4d58439d76a4292ee1ad33db945f382a2119a61bab57e355a56b4cadd01703e7796dcace966b8bbec8ed86cbd7a40ab5c85280fb7be53c337f2b92afbe42b8a81573fe3f37849cb24052888de6b1b5f48359aeab160707b470e5b91aa1f9a4444c1fc2ff0b97223518b562edfe749dbe124b08ddead30ecc644a9b4c3379db7542bf03e84cb2d11d0684bcd8eaa755d6e6a296d765335a411f664344259c91ba558118c2a0db1a80ee945af805774f527ade46a509ce224b5406f7d09006a88b50c7ef7a9d46d0c79e6255926e520a34305854d9cfb78c487597450439e06c97a48578a5c5f8fe077da966ac6ab53f680f4ca1047f1e9b4ab28cb89b8fef0b0bf01a1a9534deb4f819ce9a95198a18d91fdc8d9ac77c94b26a7ea96242c5d924aa7740d79f93485d3341b7b315dd3e9b6758f1aa08c0ac3047dde8d8c045ee5edf3f2c88efbc3a4205446e463596a8abda39339835d2c84fc8fc27d3c41a343bfed0f9e43df79f0f31eeb7af252a71bd7a5ce14aa9d899fd617aaa67440",
+        "__v": 0
+    },
+    {
+        "_id": "sonik",
+        "name": "Sonik",
+        "realName": "Mark",
+        "email": null,
+        "rank": "U",
+        "creationDate": {
+            "$date": "2026-03-26T22:38:29.922Z"
+        },
+        "location": "AZ",
+        "birthDay": null,
+        "birthMonth": null,
+        "birthYear": null,
+        "createdBy": "cutie",
+        "active": false,
+        "profilePicture": "/images/profilePicture/sonik.jpg",
+        "deletedBy": "cutie",
+        "deletionDate": {
+            "$date": "2026-03-26T22:40:32.363Z"
+        },
+        "deletionReason": "Violation of rules",
+        "numberRegistrationToken": 1.774564670733E+12,
+        "salt": "27ef124f93c1329e0489320167347c54b2711143b942021f3f33dd67c9389fde",
+        "hash": "522f647d05911864a4e26d9d57b20894da4630a76dae6bc77659df28c3713e5300f84cc55b1619679d87b37f36d82d8b9f2d7db04ccdb58780f0c0860c5d560214c99282cc4fdb4ba2c09338922ea19d8f7cea277fd669f6f9e610d1d2ef2efec89f2ee956ecc6e65508072b208b7c4d9417458bd00001f16dda93c57cfffd4fd5aefd194ffd4817fc896381ea4050d1efdf4de9479c028016b918a547c96310b254805895ca98335436949d2af2e67306d7e223a9048f8c2b516d1f4b1c61ee855331f37742efcfb408dcd5a5f18f47eb53271c218e899c1067f6ea09ef690bdac25dbcaded5110fce7ecb97ba2e402765a556c14252d9020f470857e7a7af8cbd210895935e5e183e4798d478cae7b8ef60c018fa324eba942ddd1f8f1f9c51e0195220b85db09e8660345f493285f1a3da4180eb3d63412635e1959a6b12a02549cc59e9602dd5782348c368590450c4cf8485dd230e9a190e7cde2f5fa1f8f45d9543fd005cab42d2fe54f123804748887451973a2ff6bd3c212362aa1ad42e95c4d45d79df5da59e9825d6fa277b80bd4e1aa0dcc1674d639f84669e33839d5e7bf856ecf296b5d7e750eb9c9b595a0d0b1a8499d760840a9131c4ece251c8574f7b4ccbb39c37d3538d815174b22e45d205f81139ebdd28a5d03e16a3c535c1652ae0bd51df370be63e4917437fb7a26c6fa30095d3730be6189e8d4cc",
+        "__v": 0
+    },
+    {
+        "_id": "bread",
+        "name": "Panado",
+        "realName": null,
+        "email": null,
+        "rank": "U",
+        "creationDate": {
+            "$date": "2026-03-26T22:39:04.55Z"
+        },
+        "location": null,
+        "birthDay": 18,
+        "birthMonth": 2,
+        "birthYear": 2000,
+        "createdBy": "cutie",
+        "active": true,
+        "profilePicture": "/images/panado.jpg",
+        "deletedBy": null,
+        "deletionDate": null,
+        "deletionReason": null,
+        "numberRegistrationToken": 1.774564714683E+12,
+        "salt": "56a5966faf1aff396fecc631bf5fab447b47362fe44af510a8ce9b4bc1427462",
+        "hash": "f463b0425b876b34d871f4c0f12ce24e6553d8b972b2d830fd138862283175934985ba7a2e63da1ec25f70790bc86cedabf52d9e79201eac4c804f82e1c4742549ed9c069a01f51da79aee443717378f9de51838db205b3581de101e9f5b2b28c18d651a641af6d327e86aca61b864df4aa2d50a8fa135aa84e10e5f033d4d6d64e4252cd2c5376ed2fa64a81420e89f439319fb75fcd4eefa802039c31c6452114a986a9eeaced98ccb38a4536dd1953d81bffde94ceb75a5c39163ac93dd3073efc19d25cf478aaa74f7c30555192d07a765017a5b64d76cb5a6f369989b208c03edbecf8112bb38b7991fc7f8e3ad3de583c6e04e24be4716855b387e9d4f34a0bfdede0ea0efde070b2ab0f503cb6a66b917df0d8b1a8f28021dd27c36d202cd260397c1f82c7c7a4e703d45258c2d0cc74b10df96a33fcfe04f8e0320a89c7a451f885e1624d22f0e33315c5d1d360e19505565d721d666cdc8eb38446cdc81d7f0eda824353cdf6e2f2623e8834994de8b291e5a18e17fbac3d9662cc2f9c0100b4f43d93a206f65905701a6eabdf8aee9c60b714903dbd3b91ab49e5242254906b19aabe98fac748283fb86fb22a930a0c919c8e2309785c788fd434c85daca08938403e62703b2d015cef4d6b4a97867df1dfefeb964671c054f937dff96637288b556bfab2f30f7eea26f4fa6f3c8a5c1fcdc4c7bd7853d5a021243",
+        "__v": 0
+    },
+    {
+        "_id": "bunny",
+        "name": "Bugs bunny",
+        "realName": null,
+        "email": null,
+        "rank": "U",
+        "creationDate": {
+            "$date": "2026-03-26T22:39:40.799Z"
+        },
+        "location": "NO",
+        "birthDay": 28,
+        "birthMonth": 11,
+        "birthYear": null,
+        "createdBy": "cutie",
+        "active": true,
+        "profilePicture": "/images/profilePicture/bunny.jpeg",
+        "deletedBy": null,
+        "deletionDate": null,
+        "deletionReason": null,
+        "numberRegistrationToken": 1.774564752875E+12,
+        "salt": "f702d630e52a7ba4c00fd0cd9eee9695ebc1d5ff6510a8340732d0fc5e175249",
+        "hash": "4bc4dc9f7ae99663e276460148274efe15ca62c392dc588e5b6c7f705dc2574cb78526bf1aeeb1730575760216d6010dd2cf7dc449a29e11eabc581b6e27414f4e4add4c3ff5b67a980e54b67158af940d385e8ebbfdc27139d8727761d7f9c867cb1fed859750ebf8e8835d29c76b2979620365f4d77e6e772cd8eac6a2a2072e9a3fceefae19afa03deb298375f7ab07507706acdaff47b1ce30876bd72f93140fb4d9797f72cb509f04f75b5b9f64909d77e524d691842780f046f5958c9a43663fc68c00bbc1d6a0de3a4fdec7ed80c8d14a26e14ce936129328709e65e644e9954e78304e561c14298d58f8549ebe2729c8b968843dc82f3e9648d58050332e24f7506c90bc5e987784417b9ac75df7a128e72f109aad43498f06930c2404cdda13a9be99e73b8b2b07e17ee1d5adac43fa2616ba41518f303cd41f399da2047bd8249bb000e616aa0980c91bf5f7fc2eb141d7f38e85a7538f60fdab729bb543781b72877b35ff552241ab22275faffb90659f9512dd4dc4ecf08ae328bcf5bbacf51f962b104fb11c260332f533c9f2950bef566aac7d1b78795a3db0a1bc346ae32765f9d1ebc624907f8912dec8608c9b748e238d7995ef65be78fb2766a6f8035b7efd14ab1494693708b35e19a792edd2ee87226018ee20334fc96f886403bbdbc40167f3ec299cc46603e01060a4fd18c20c56d4aaef79c33389",
+        "__v": 0
+    }
+]
