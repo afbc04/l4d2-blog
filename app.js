@@ -8,7 +8,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 // Conection of Database
 const mongoDB = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@mongo:27017/${process.env.MONGO_DB}?authSource=admin`;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoDB);
 
 var connection = mongoose.connection;
 connection.on('connecting', () => { logger.info('MongoDB connecting...'); });

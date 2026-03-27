@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
       - mongo-data:/data/db
-    command: ["mongod", "--quiet", "--logpath", "/var/log/mongodb/mongod.log", "--logappend"]
+    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
     logging:
       driver: "none"
 
@@ -23,8 +23,6 @@ services:
       - "8989:8989"
     depends_on:
       - mongo
-    volumes:
-      - ./:/usr/src/app
     command: npm start
 
 volumes:
