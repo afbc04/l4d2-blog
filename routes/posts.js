@@ -108,6 +108,8 @@ router.get('/view/:post', authController.noToken, asyncHandler(async (req, res) 
     if (post.deleted == true)
       return res.status(404).render('posts/viewDeletedPost', { title: `Post ${id}`, post });
 
+    await PostController.incView(id)
+
     let viewer = null
     if (req.token) {
       viewer = req.token

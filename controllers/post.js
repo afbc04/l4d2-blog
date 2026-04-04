@@ -68,6 +68,16 @@ module.exports.addViewer = async (id, viewer) => {
     id,
     {
       $addToSet: { viewers: viewer },
+    },
+    { new: true }
+  );
+};
+
+// Increment views counter to a Post
+module.exports.incView = async (id) => {
+  await PostModal.findByIdAndUpdate(
+    id,
+    {
       $inc: { viewsCount: 1 }
     },
     { new: true }
