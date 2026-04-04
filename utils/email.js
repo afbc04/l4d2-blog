@@ -1,37 +1,13 @@
-const rateLimit = require('express-rate-limit');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const logger = require('./logger');
 
-module.exports.emailLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 2,
-  handler: (req, res) => {
-    const retryAfter = req.rateLimit ? Math.ceil((req.rateLimit.resetTime - Date.now()) / 1000) : null;
-    
-    logger.event('Email verification rate limit hit', `IP: ${req.ip} | Email: ${req.body.email || '???'}`);
-    
-    res.status(429).render("auth/emailLimiting", {
-      title: "Slow down",
-      retryAfter
-    });
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports.sendRecoveryPasswordEmail = async (userEmail, userId, userName, token) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const recoverLink = `${process.env.BASEURL}/users/recover/${userId}/${userEmail}/${token}`
 
-    const mailOptions = {
+    const msg = {
       from: `"afbc04 - Blog" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: 'Recovery of Account',
@@ -73,8 +49,8 @@ module.exports.sendRecoveryPasswordEmail = async (userEmail, userId, userName, t
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.event(`Recovery email sent ${info}`)
+    await sgMail.send(msg);
+    logger.event(`Recovery email sent to ${userEmail}`)
 
     return true;
   } catch (err) {
@@ -85,19 +61,9 @@ module.exports.sendRecoveryPasswordEmail = async (userEmail, userId, userName, t
 
 module.exports.sendApprovalAccountEmail = async (userEmail,userName, userID) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const loginLink = `${process.env.BASEURL}/auth/login?username=${userID}&message=approvedAccount`
 
-    const mailOptions = {
+    const msg = {
       from: `"afbc04 - Blog" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: 'Welcome to Blog!',
@@ -145,8 +111,8 @@ module.exports.sendApprovalAccountEmail = async (userEmail,userName, userID) => 
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.event(`Approval account email sent ${info}`)
+    await sgMail.send(msg);
+    logger.event(`Approval account email sent to ${userEmail}`)
 
     return true;
   } catch (err) {

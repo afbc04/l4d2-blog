@@ -131,7 +131,7 @@ router.get('/recoverPassword', asyncHandler(async (req, res) => {
   })
 );
 
-router.post('/recoverPassword', emailUtil.emailLimiter, asyncHandler(async (req, res) => {
+router.post('/recoverPassword', asyncHandler(async (req, res) => {
   
     const { email } = req.body  
     const users = await UserController.getUsersFromEmailToRecovery(email);
