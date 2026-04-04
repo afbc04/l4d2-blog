@@ -66,7 +66,16 @@ router.post('/create', authController.validateToken, upload.array('attachments')
         const ext = path.extname(file.originalname);
         const newPath = path.join(postFolder, `file${i}${ext}`);
 
-        fs.renameSync(file.path, newPath);
+        try {
+          fs.renameSync(file.path, newPath);
+        } catch (err) {
+          if (err.code === 'EXDEV') {
+            fs.copyFileSync(file.path, newPath);
+            fs.unlinkSync(file.path);
+          } else {
+            throw err;
+          }
+        }
 
         finalFiles.push({
           fileName: customName,
