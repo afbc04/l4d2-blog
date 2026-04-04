@@ -16,7 +16,7 @@ block content
         a(href="/about" data-tooltip="About")
           i.fa-solid.fa-circle-info
 
-        a(href="/users" class="active" data-tooltip="People")
+        a(href="/users" data-tooltip="People")
           i.fa-solid.fa-users
 
         a(href="/birthdays" data-tooltip="Birthdays")
@@ -27,7 +27,7 @@ block content
 
         if user
           if user.rank == "A"
-            a(href="/users/waitingApproval" data-tooltip="Approve accounts")
+            a(href="/users/waitingApproval" class="active" data-tooltip="Approve accounts")
               i.fa-solid.fa-user-check
 
       div(style="display:flex; gap:10px; align-items:center;")
@@ -63,8 +63,22 @@ block content
 
     .w3-card-4(style="position:relative; z-index:1; width:650px; padding:30px; border-radius:12px; box-shadow:0 12px 35px rgba(0,0,0,0.25); background: rgba(255, 255, 255, 0.85); display:flex; flex-direction:column; gap:20px;")
       
+      if isUserUpdated
+        if isUserApproved == true
+          .w3-panel(style="background:#e6f7f7; color:#006666; padding:12px; margin-bottom:15px; border-radius:6px; text-align:center;")
+            | User 
+            b #{userApproved.name} 
+            i (#{userApproved._id}) 
+            | was approved
+        else
+          .w3-panel(style="background:#f8d7da; color:#721c24; padding:12px; margin-bottom:15px; border-radius:6px; text-align:center;")
+            | User 
+            b #{userApproved.name} 
+            i (#{userApproved._id}) 
+            | was rejected
+
       h2(style="text-align:center; color:#008080; font-family:'Segoe UI', sans-serif; font-size:2rem; margin-bottom:20px;")
-        | Meet our people
+        | Approve Accounts
 
       each u in users
         .w3-card-4(style="padding:20px; border-radius:12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background:#fafafa; display:flex; gap:15px; align-items:center;")
@@ -78,40 +92,36 @@ block content
 
           .user-info(style="display:flex; flex-direction:column; gap:5px;")
             h3(style="margin:0; font-size:1.2rem;")
-              a(
-                href=`/users/details/${u._id}`,
-                style="color:#008080; text-decoration:none;"
-              )
+              span(style="color:#008080; text-decoration:none;")
                 if u.realName
                   | #{u.realName} 
                   span(style="font-size:0.95rem; color:#888; margin-left:5px;") (#{u.name})
                 else
                   | #{u.name}
 
-              if u.location
-                - const countryCode = u.location.toLowerCase()
-                span(style="margin-left:5px;display:inline-flex; align-items:center; gap:6px; color:#333; font-size:0.85rem;")
-                  img(src=`https://flagpedia.net/data/flags/h80/${countryCode}.png`, alt=`${countryCode} Flag`, width="20", height="14", style="border:1px solid #ccc; border-radius:2px;")
-
-              if u.rank === "A"
-                span(style="font-size:0.90rem; font-weight:500; color:#ed2b2b; margin-left:10px;") Administrator
-
             - const createdDate = new Date(u.creationDate)
             - const formattedDate = createdDate.toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric'})
             span(style="font-size:0.85rem; color:#666;")
               | Joined in #{formattedDate}
 
-            span(style="font-size:0.85rem;")
-              if u.active
-                span(style="background:#e8f5e9; color:#388e3c; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
-                  | Active
-              else
-                span(style="background:#ffebee; color:#d32f2f; padding:4px 10px; border-radius:12px; font-size:0.85rem; font-weight:500; display:inline-block;")
-                  | Terminated
+          div(style="margin-left:auto; display:flex; gap:10px;")
 
-          a(
-            href=`/users/details/${u._id}`,
-            style="margin-left:auto; color:#888; font-size:0.85rem; text-decoration:none; transition:color 0.2s;"
-            onmouseover="this.style.color='#008080'"
-            onmouseout="this.style.color='#888'"
-          ) View profile
+            form(action=`/users/approveUser/${u._id}` method="POST")
+              button(
+                type="submit"
+                style="padding:6px 14px; background:#e6f7f1; color:#1b8f6b; border:none; border-radius:20px; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s;"
+                onmouseover="this.style.background='#1b8f6b'; this.style.color='#fff'"
+                onmouseout="this.style.background='#e6f7f1'; this.style.color='#1b8f6b'"
+              )
+                i.fa-solid.fa-check(style="margin-right:5px;")
+                | Approve
+
+            form(action=`/users/rejectUser/${u._id}` method="POST")
+              button(
+                type="submit"
+                style="padding:6px 14px; background:#fdecea; color:#c0392b; border:none; border-radius:20px; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s;"
+                onmouseover="this.style.background='#c0392b'; this.style.color='#fff'"
+                onmouseout="this.style.background='#fdecea'; this.style.color='#c0392b'"
+              )
+                i.fa-solid.fa-xmark(style="margin-right:5px;")
+                | Reject

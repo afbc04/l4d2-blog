@@ -22,24 +22,9 @@ block content
 
       form#userCreateForm(method="POST" enctype="multipart/form-data", novalidate)
         
-        if requiresToken
-          .w3-card-4(style="margin:20px auto; padding:20px; border-left:5px solid #008080; background:#f9f9f9; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);")
-            p.w3-text-black
-              | In order to create a user, you 
-              b must 
-              | have a registration token to continue.
-            p.w3-text-gray
-              | If you don't have a registration token, request one from administrators.
-            
-            label
-              b Registration Token
-              span(style="color:red") * 
-            input.w3-input.w3-round(
-              type="text",
-              name="token",
-              placeholder="Enter registration token here..."
-            )
-            span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Registration token is required.
+        if requiresApproval
+          .w3-panel(style="background:#fff8e1; color:#8a6d00; border-left:5px solid #d4af37; padding:12px; margin-bottom:15px; border-radius:6px; text-align:center;")
+            | After registration, your account will need to be approved by an administrator before you can access it.
 
         .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
           
@@ -65,7 +50,7 @@ block content
             label
               b Username
               span(style="color:red") * 
-            input.w3-input.w3-round(type="text", name="username", placeholder="Unique ID for system login")
+            input.w3-input.w3-round(type="text", name="username", placeholder="Unique ID for system login", pattern="^[A-Za-z0-9]+$",)
             span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Username is required.
 
             label
@@ -79,6 +64,12 @@ block content
               span(style="color:red") * 
             input.w3-input.w3-round(type="password", name="password", placeholder="Set a secure password")
             span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Password is required.
+
+            label
+              b Email (optional)
+              div.helper-texts(style="font-size:0.8rem; color:#888; margin-top:2px;")
+                span Providing email allows you to change password without needing an administrator
+            input.w3-input.w3-round(type="email", name="email", placeholder="Email for password reset")
 
             label.w3-text-gray
               b Real Name (optional)
@@ -118,10 +109,6 @@ block content
               br
               span
                 i To keep your age private, do not provide year.
-
-            label.w3-text-gray
-              b Email (optional)
-            input.w3-input.w3-round(type="email", name="email", placeholder="Email for password reset")
 
           if error
             p(style="color:red; text-align:center; margin-top:10px; font-weight:500")= error

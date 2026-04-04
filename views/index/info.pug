@@ -28,8 +28,8 @@ block content
 
         if user
           if user.rank == "A"
-            a(href="/users/get-registration-token" data-tooltip="Create Registration Code")
-              i.fa-solid.fa-ticket
+            a(href="/users/waitingApproval" data-tooltip="Approve accounts")
+              i.fa-solid.fa-user-check
 
       div(style="display:flex; gap:10px; align-items:center;")
         if user
@@ -73,14 +73,13 @@ block content
               b(style="color:#008080; font-size:1.25rem;") 1. Account Registration
               i.fa-solid.fa-chevron-down
             div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
-              p To create an account, a valid 
-                b registration token 
-                |  is required.
+              p Anyone can create an account, but the approval of account can only be performed by 
+                b administrators
+                |  of blog.
               ul
-                li Tokens are issued only by 
-                  b administrators
-                li Each token can be used 
-                  b once only
+                li Users can be notify of approval of account if they provided an 
+                  b email
+                li Administrators can deny any account and no notification will be informed
                 li Users are responsible for maintaining the confidentiality of their credentials
 
           .faq-item(style="padding:15px; border-radius:10px; background:#fafafa; box-shadow:0 4px 12px rgba(0,0,0,0.08);")
@@ -149,11 +148,9 @@ block content
             div.faq-answer(style="margin-top:8px; font-size:0.9rem; color:#555; max-height:0; overflow:hidden; transition:max-height 0.35s ease;")
               p Administrators can:
               ul
-                li Allow creation of accounts
+                li Approve or deny requests of accounts
                 li Delete posts
                 li Terminate accounts
-                li Generate registration tokens
-                li Reset passwords
               p However:
               ul
                 li Cannot edit user-generated content
@@ -192,7 +189,7 @@ block content
 
               p
                 b Can I recover my password?
-              p Administrators can reset it if needed.
+              p If your account has an email on it, it can be done via email. Otherwise, contact us.
 
               p
                 b Can I suggest changes?

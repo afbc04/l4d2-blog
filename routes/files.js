@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const asyncHandler = require('../utils/errors');
 
-const authController = require('../auth/auth')
+const authController = require('../utils/auth')
 const PostController = require("../controllers/post");
 
 // GET - Send files
-router.get('/:id/*', authController.noToken, async (req, res) => {
-  try {
+router.get('/:id/*', authController.noToken, asyncHandler(async (req, res) => {
 
     const post = await PostController.findById(req.params.id);
     if (!post || post.deleted == true) 
@@ -41,12 +41,8 @@ router.get('/:id/*', authController.noToken, async (req, res) => {
 
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Disposition', 'inline');
-    res.sendFile(filePath);
-
-  } catch (err) {
-    console.error('Error sending file:', err);
-    res.status(500).send();
-  }
-});
+    return res.sendFile(filePath);
+  })
+);
 
 module.exports = router

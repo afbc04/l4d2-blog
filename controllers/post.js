@@ -34,7 +34,6 @@ module.exports.create = async (data) => {
   try {
     const post = new PostModal({ ...data });
     await post.save();
-    logger.event('Post created', `PostID: ${post._id} | Author: ${data.author || '???'}`);
     return post;
   } 
   catch (err) {
@@ -47,7 +46,6 @@ module.exports.update = async (id, data) => {
   await PostModal
     .findByIdAndUpdate(id, data, { new: true, runValidators: true });
 
-  logger.event('Post updated', `PostID: ${id}`);
   return this.findById(id);
 };
 
@@ -56,8 +54,8 @@ module.exports.updateFiles = async (id, files) => {
   try {
     const post = await PostModal.findById(id);
     post.files = files;
+
     await post.save();
-    logger.event('Post files updated', `PostID: ${id} | Files: ${files.length}`);
     return post.files;
   } catch (err) {
     throw err;
@@ -68,7 +66,10 @@ module.exports.updateFiles = async (id, files) => {
 module.exports.addViewer = async (id, viewer) => {
   await PostModal.findByIdAndUpdate(
     id,
-    { $addToSet: { viewers: viewer } },
+    {
+      $addToSet: { viewers: viewer },
+      $inc: { viewsCount: 1 }
+    },
     { new: true }
   );
 };
@@ -82,7 +83,6 @@ module.exports.addComment = async (id, comment) => {
   const post = await PostModal.findById(id);
   post.comments.push(comment);
   await post.save();
-  logger.event('Comment added', `PostID: ${id} | CommentID: ${comment._id} | Author: ${comment.author || '???'}`);
 };
 
 // Get comment
@@ -92,7 +92,6 @@ module.exports.getComment = async (postId, commentId) => {
   if (!comment) 
     return null
 
-  logger.event('Get comment', `PostID: ${postId} | CommentID: ${commentId}`);
   return comment;
 };
 
@@ -101,5 +100,4 @@ module.exports.deleteComment = async (postId, commentId) => {
   const post = await PostModal.findById(postId);
   post.comments = post.comments.filter(c => c._id.toString() !== commentId);
   await post.save();
-  logger.event('Comment deleted', `PostID: ${postId} | CommentID: ${commentId}`);
 };

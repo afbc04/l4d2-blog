@@ -20,8 +20,8 @@ block content
           i.fa-brands.fa-github
         if user
           if user.rank == "A"
-            a(href="/users/get-registration-token" data-tooltip="Create Registration Code")
-              i.fa-solid.fa-ticket
+            a(href="/users/waitingApproval" data-tooltip="Approve accounts")
+              i.fa-solid.fa-user-check
 
       div(style="display:flex; gap:10px; align-items:center;")
         if user
@@ -54,3 +54,9 @@ block content
       
       p(style="font-size:0.95rem; color:#444; line-height:1.7;")
         | Your contributions help make this community vibrant and informative.
+
+      h2(style="color:#008080; margin:30px 0 10px 0;") Contact Us
+
+      p(style="font-size:0.95rem; color:#444; line-height:1.7;")
+        | For questions, support, or feedback, reach out via email:
+        a(href="mailto:support@afbc04.com" style="color:#008080; text-decoration:underline; margin-left:4px;") support@afbc04.com

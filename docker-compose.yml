@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:7
+    image: mongo:6
     container_name: l4d2-database
     restart: unless-stopped
     env_file: .env
@@ -21,6 +21,17 @@ services:
     env_file: .env
     ports:
       - "8989:8989"
+    volumes:
+    - ./bin:/l4d2api/bin
+    - ./certs:/l4d2api/certs
+    - ./controllers:/l4d2api/controllers
+    - ./logs:/l4d2api/logs
+    - ./models:/l4d2api/models
+    - ./public:/l4d2api/public
+    - ./routes:/l4d2api/routes
+    - ./uploads:/l4d2api/uploads
+    - ./utils:/l4d2api/utils
+    - ./views:/l4d2api/views
     depends_on:
       - mongo
     command: npm start

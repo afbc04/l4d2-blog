@@ -50,6 +50,12 @@ block content
             input.w3-input.w3-round(type="text", name="name", value=user.name, placeholder="What do we call you?")
             span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Name is required.
 
+            label
+              b Email (optional)
+              div.helper-texts(style="font-size:0.8rem; color:#888; margin-top:2px;")
+                span Providing email allows you to change password without needing an administrator
+            input.w3-input.w3-round(type="email", name="email", value=user.email || "", placeholder="Email for password reset")
+
             label.w3-text-gray
               b Real Name (optional)
             input.w3-input.w3-round(type="text", name="realName", value=user.realName || "", placeholder="What is your real name?")
@@ -88,10 +94,6 @@ block content
               br
               span
                 i To keep your age private, do not provide year.
-
-            label.w3-text-gray
-              b Email (optional)
-            input.w3-input.w3-round(type="email", name="email", value=user.email || "", placeholder="Email for password reset")
 
           if error
             p(style="color:red; text-align:center; margin-top:10px; font-weight:500")= error

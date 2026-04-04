@@ -7,6 +7,7 @@ const PostSchema = new mongoose.Schema({
   userID: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
   public: { type: Boolean, default: false },
+  edited: { type: Boolean, default: false },
   pinned: { type: Boolean, default: false },
   deleted: { type: Boolean, default: false },
   deletedBy: { type: String, default: null },
@@ -28,7 +29,8 @@ const PostSchema = new mongoose.Schema({
       fileName: { type: String, required: true }
     }
   ],
-  viewers: [{ type: String }]
+  viewers: [{ type: String }],
+  viewsCount: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model("Post", PostSchema, "posts");

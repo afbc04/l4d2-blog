@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
 var app = require('../app');
-var debug = require('debug')('l4d2-blog:server');
-var http = require('http');
 var logger = require('../utils/logger');
+const https = require('https')
+const fs = require('fs')
 
-var port = normalizePort(process.env.PORT || '3000');
+const sslOptions = {
+  key: fs.readFileSync('./certs/key.pem'),
+  cert: fs.readFileSync('./certs/cert.pem')
+}
+
+var port = normalizePort(8989);
 app.set('port', port);
 
-var server = http.createServer(app);
+var server = https.createServer(sslOptions, app);
 
 server.listen(port);
 server.on('error', onError);
@@ -52,11 +57,5 @@ function onError(error) {
 }
 
 function onListening() {
-  var addr = server.address();
-
-  if (typeof addr === 'string') {
-    logger.info(`Server listening on ${addr}`);
-  } else {
-    logger.info(`Server running on http://localhost:${addr.port}`);
-  }
+  logger.info(`Server L4D2 BLOG is running`);
 }

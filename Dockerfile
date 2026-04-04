@@ -1,12 +1,11 @@
 FROM node:20
 
-WORKDIR /usr/src/app
+WORKDIR /l4d2api
 
-COPY package*.json ./
+COPY package.json ./
+COPY app.js ./
 
 RUN npm install
-
-COPY . .
 
 EXPOSE 8989
 

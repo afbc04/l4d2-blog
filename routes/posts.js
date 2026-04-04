@@ -3,10 +3,11 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const asyncHandler = require('../utils/errors');
 
 const UserController = require("../controllers/user");
 const PostController = require("../controllers/post");
-const authController = require("../auth/auth");
+const authController = require("../utils/auth");
 const getSequence = require("../utils/sequence");
 
 const upload = multer({
@@ -17,19 +18,15 @@ const upload = multer({
 //     CREATION POST
 // #######################
 
-router.get('/create', authController.validateToken, async (req, res) => {
-  try {
-    res.render('posts/createPost', { 
+router.get('/create', authController.validateToken, asyncHandler(async (req, res) => {
+    return res.render('posts/createPost', { 
       title: "Publish Post",
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error loading create post page' });
-  }
-});
+  })
+);
 
-router.post('/create', authController.validateToken, upload.array('attachments'), async (req, res) => {
-  try {
+router.post('/create', authController.validateToken, upload.array('attachments'), asyncHandler(async (req, res) => {
+
     const { title, content, tags, isPublic, disableComments } = req.body;
 
     const id = await getSequence("posts")
@@ -41,6 +38,7 @@ router.post('/create', authController.validateToken, upload.array('attachments')
       userID: req.token._id,
       createdAt: new Date().toISOString(),
       public: isPublic === 'on',
+      edited: false,
       allowComments: disableComments !== 'on',
       pinned: false,
       deleted: false,
@@ -50,7 +48,8 @@ router.post('/create', authController.validateToken, upload.array('attachments')
       tags: (tags || "").split(' ').map(t => t.trim()).filter(t => t !== ''),
       comments: [],
       files: [],
-      viewers: [req.token._id]
+      viewers: [req.token._id],
+      viewsCount: 0
     };
 
     await PostController.create(newPost);
@@ -78,20 +77,17 @@ router.post('/create', authController.validateToken, upload.array('attachments')
     }
 
     await PostController.updateFiles(id, finalFiles, { replace: true });
-    res.redirect(`/posts/view/${id}`);
+    return res.redirect(`/posts/view/${id}`);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error while creating post' });
-  }
-});
+  })
+);
 
 // #######################
 //        VIEW POST
 // #######################
 
-router.get('/view/:post', authController.noToken, async (req, res) => {
-  try {
+router.get('/view/:post', authController.noToken, asyncHandler(async (req, res) => {
+
     const id = req.params.post;
     const post = await PostController.findById(id);
     if (!post) 
@@ -112,25 +108,21 @@ router.get('/view/:post', authController.noToken, async (req, res) => {
     const usersProfilePictures = await UserController.getProfilePicturesDictionary();
     post.comments = post.comments.filter(c => viewer ? true : !c.userID);
 
-    res.render('posts/viewPost', { 
+    return res.render('posts/viewPost', { 
       title: `Post ${id}`, 
       post, 
       viewer,
       usersProfilePictures
     });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error fetching post page' });
-  }
-});
+  })
+);
 
 // #######################
 //     EDIT POST
 // #######################
 
-router.get('/edit/:post', authController.validateToken, async (req, res) => {
-  try {
+router.get('/edit/:post', authController.validateToken, asyncHandler(async (req, res) => {
+
     const id = req.params.post;
     const post = await PostController.findById(id);
     if (!post) 
@@ -142,20 +134,16 @@ router.get('/edit/:post', authController.validateToken, async (req, res) => {
     if (post.deleted == true)
       return res.status(404).render('posts/viewDeletedPost', { title: `Post ${id}`, post });
 
-    res.render('posts/editPost', { 
+    return res.render('posts/editPost', { 
       title: `Edit Post`, 
       post
     });
+  })
+);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error fetching edit post page' });
-  }
-});
+router.post('/edit/:post', authController.validateToken, upload.array('attachments'), asyncHandler(async (req, res) => {
 
-router.post('/edit/:post', authController.validateToken, upload.array('attachments'), async (req, res) => {
-  try {
-    const { tags, isPublic, disableComments } = req.body;
+    const { title, content, tags, isPublic, disableComments } = req.body;
 
     const id = req.params.post;
     const post = await PostController.findById(id);
@@ -172,23 +160,22 @@ router.post('/edit/:post', authController.validateToken, upload.array('attachmen
       public: isPublic === 'on',
       allowComments: disableComments !== 'on',
       tags: (tags || "").split(' ').map(t => t.trim()).filter(t => t !== ''),
+      title: title,
+      content: content,
+      edited: true
     };
 
     await PostController.update(id,updatedPost);
-    res.redirect(`/posts/view/${id}`);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error while editing post' });
-  }
-});
+    return res.redirect(`/posts/view/${id}`);
+  })
+);
 
 // #######################
 //     DELETE POST
 // #######################
 
-router.get('/delete/:id', authController.validateToken, async (req, res) => {
-  try {
+router.get('/delete/:id', authController.validateToken, asyncHandler(async (req, res) => {
+
     const post = await PostController.findById(req.params.id);
     if (!post) return res.status(404).render('posts/noPostFound', { title: "Post not found" });
 
@@ -196,18 +183,14 @@ router.get('/delete/:id', authController.validateToken, async (req, res) => {
       return res.status(403).render('posts/editForbiddenPost', { title: `Not allowed`, post });
 
     if (post.deleted == true)
-      return res.status(404).render('posts/viewDeletedPost', { title: `Post ${id}`, post });
+      return res.status(404).render('posts/viewDeletedPost', { title: `Post ${req.params.id}`, post });
 
     return res.render('posts/deletePost', { title: "Delete post", deletionUser: req.token._id, post });
-  
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error loading delete post page' });
-  }
-});
+  })
+);
 
-router.post('/delete/:id', authController.validateToken, async (req, res) => {
-  try {
+router.post('/delete/:id', authController.validateToken, asyncHandler(async (req, res) => {
+
     const { deletionReason } = req.body;
     const post = await PostController.findById(req.params.id);
     if (!post) return res.status(404).render('posts/noPostFound', { title: "Post not found" });
@@ -216,7 +199,7 @@ router.post('/delete/:id', authController.validateToken, async (req, res) => {
       return res.status(403).render('posts/editForbiddenPost', { title: `Not allowed`, post });
 
     if (post.deleted == true)
-      return res.status(404).render('posts/viewDeletedPost', { title: `Post ${id}`, post });
+      return res.status(404).render('posts/viewDeletedPost', { title: `Post ${req.params.id}`, post });
 
     const deletedPost = {
       content: null,
@@ -239,19 +222,15 @@ router.post('/delete/:id', authController.validateToken, async (req, res) => {
       await fs.promises.rm(folderPath, { recursive: true, force: true });
     }
     return res.redirect(`/`);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error deleting post' });
-  }
-});
+  })
+);
 
 // #######################
 //    POST COMMENT
 // #######################
 
-router.post('/comments/:post', authController.noToken, async (req, res) => {
-  try {
+router.post('/comments/:post', authController.noToken, asyncHandler(async (req, res) => {
+
     const id = req.params.post;
     const post = await PostController.findById(id);
 
@@ -276,19 +255,15 @@ router.post('/comments/:post', authController.noToken, async (req, res) => {
 
     await PostController.addComment(id,newComment)
     return res.redirect(`/posts/view/${id}#comments`);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error creating comment to post' });
-  }
-});
+  })
+);
 
 // #######################
 //     DELETE COMMENT
 // #######################
 
-router.post('/deleteComment/:post/:comment', authController.validateToken, async (req, res) => {
-  try {
+router.post('/deleteComment/:post/:comment', authController.validateToken, asyncHandler(async (req, res) => {
+
     const postId = req.params.post;
     const commentId = req.params.comment;
     const post = await PostController.findById(postId);
@@ -308,11 +283,7 @@ router.post('/deleteComment/:post/:comment', authController.validateToken, async
 
     await PostController.deleteComment(postId,commentId)
     return res.redirect(`/posts/view/${postId}#comments`);
-    
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { title: 'Error', err, message: 'Error deleting comment of post' });
-  }
-});
+  })
+);
 
 module.exports = router;

@@ -21,6 +21,8 @@ block content
       form#postCreateForm(action="/posts/create" method="POST" onsubmit="syncEditor()" enctype="multipart/form-data")
         .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
 
+          p(style="color:#666; font-size:0.85rem; margin-top:5px;") Make sure to activate scripts in this page ;)
+
           label
             b Title
             span(style="color:red") * 
@@ -28,7 +30,7 @@ block content
           span.validation-msg(style="color:red; font-size:0.85rem; display:none;") Title is required.
 
           label.w3-text-gray(style="margin-top:15px;")
-            b Description (optional)
+            b Text (optional)
           textarea#wmd-editor.w3-input.w3-border(name="content" rows="20" placeholder="Write your post using Markdown...") 
 
           p(style="text-align:center; margin-top:15px; font-size:0.85rem; color:#555;")
@@ -70,7 +72,7 @@ block content
       spellChecker: false,
       placeholder: "Write your post using Markdown...",
       autosave: { enabled: true, uniqueId: "post_content", delay: 1000 },
-      renderingConfig: { singleLineBreaks: false, codeSyntaxHighlighting: true },
+      renderingConfig: { singleLineBreaks: true, codeSyntaxHighlighting: true },
       toolbar: [
         "bold","italic","heading","|",
         "quote","unordered-list","ordered-list","|",

@@ -81,8 +81,7 @@ app.use((err, req, res, next) => {
   logger.err(err, req);
 
   res.status(500).render('error', {
-    title: 'Error',
-    message: err.message
+    title: 'Error'
   });
 });
 

@@ -11,22 +11,28 @@ block content
 
       .header(style="text-align:center; margin-bottom:30px;")
         h2(style="color:#008080; font-family:'Segoe UI', sans-serif; font-size:1.8rem;") Edit Post Nº#{post._id}
-        p(style="color:#666; font-size:0.95rem; margin-top:5px;") Edit some informations about your post, such as tags, visibility and comments
+        p(style="color:#666; font-size:0.95rem; margin-top:5px;") Edit some informations about your post
 
       form#postEditForm(action=`/posts/edit/${post._id}` method="POST")
         .w3-card-4(style="padding:25px; margin-top:20px; background:#fafafa; border-radius:8px; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);")
 
+          p(style="color:#666; font-size:0.85rem; margin-top:5px;") Make sure to activate scripts in this page ;)
+
           label.w3-text-gray
             b Title
-          input.w3-input.w3-round(type="text" name="title" value=post.title readonly)
+          input.w3-input.w3-round(type="text" name="title" value=post.title)
 
-          if post.content && post.content.trim()
-            label.w3-text-gray(style="margin-top:15px;")
-                b Description
-            textarea#wmd-editor(name="content")= post.content
+          label.w3-text-gray(style="margin-top:15px;")
+            b Text (optional)
+          textarea#wmd-editor.w3-input.w3-border(name="content" rows="20" placeholder="Write your post using Markdown..." value=post.content) 
+
+          p(style="text-align:center; margin-top:15px; font-size:0.85rem; color:#555;")
+            | This text editor supports and uses
+            a(href="https://www.markdownguide.org/basic-syntax/" target="_blank" style="color:#4caf50; text-decoration:underline; margin-left:5px;") Markdown
+            | . Maybe it's a good idea to check it out.
 
           p(style="text-align:center; margin-top:10px; font-size:0.85rem; color:#555;")
-            | Content and attached files cannot be modified.
+            | Attached files cannot be modified.
 
           label(style="margin-top:15px;")
             b Tags
@@ -73,33 +79,36 @@ block content
   script(src="https://unpkg.com/easymde/dist/easymde.min.js")
 
   script.
+    const content = `!{post.content || ''}`;
+    const lineCount = content.split('\n').length + 1;
+
+    const textarea = document.getElementById("wmd-editor");
+
+    const easyMDE = new EasyMDE({
+      element: textarea,
+      initialValue: content,
+      spellChecker: false,
+      placeholder: "Write your post using Markdown...",
+      autoDownloadFontAwesome: false,
+      toolbar: [
+        "bold","italic","heading","|",
+        "quote","unordered-list","ordered-list","|",
+        "link","image","|",
+        "preview","side-by-side","fullscreen"
+      ],
+      renderingConfig: {
+        singleLineBreaks: true,
+        codeSyntaxHighlighting: true
+      },
+      status: false
+    });
+
+    function syncEditor() {
+      document.getElementById("wmd-editor").value = easyMDE.value();
+      return true;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-
-        const content = `!{post.content || ''}`;
-        const textarea = document.getElementById("wmd-editor");
-
-        if (textarea) {
-            const lineCount = content.split('\n').length + 1;
-            const easyMDE = new EasyMDE({
-            element: textarea,
-            initialValue: content,
-            minHeight: "24px",
-            maxHeight: (lineCount * 24) + "px",
-            spellChecker: false,
-            autoDownloadFontAwesome: false,
-            toolbar: ["bold","italic","heading","|","quote","unordered-list","ordered-list","|","link","image","|","preview","side-by-side","fullscreen"],
-            renderingConfig: { singleLineBreaks: false, codeSyntaxHighlighting: true },
-            status: false,
-            readOnly: true
-            });
-
-            easyMDE.codemirror.on("beforeChange", (instance, change) => {
-            if (change.origin !== "setValue") change.cancel();
-            });
-
-            easyMDE.togglePreview();
-        }
-
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
 

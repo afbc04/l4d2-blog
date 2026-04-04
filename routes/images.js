@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
-const authController = require('../auth/auth')
+const authController = require('../utils/auth')
 
 // GET - Send image
 router.get('/profilePicture/:file', authController.validateAccessToResources, (req, res) => {
-  try {
+
     const dir = path.join(__dirname, '../uploads/profile_pictures');
     const file = req.params.file;
     const filePath = path.join(dir, file);
@@ -22,10 +22,6 @@ router.get('/profilePicture/:file', authController.validateAccessToResources, (r
     res.set('Content-Disposition', 'inline');
     res.sendFile(filePath);
 
-  } catch (err) {
-    console.error('Error sending profile picture:', err);
-    res.status(500).send();
-  }
 });
 
 module.exports = router

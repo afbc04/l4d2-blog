@@ -18,6 +18,10 @@ block content
           i.fa-solid.fa-cake-candles
         a(href="https://github.com/afbc04/l4d2-blog" target="_blank" data-tooltip="GitHub")
           i.fa-brands.fa-github
+        if user
+          if user.rank == "A"
+            a(href="/users/waitingApproval" data-tooltip="Approve accounts")
+              i.fa-solid.fa-user-check
 
       div(style="display:flex; gap:10px; align-items:center;")
         if user

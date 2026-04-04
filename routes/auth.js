@@ -4,6 +4,9 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 var logger = require('../utils/logger');            
+const emailUtil = require('../utils/email');
+const asyncHandler = require('../utils/errors');
+const UserController = require('../controllers/user');
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
@@ -27,9 +30,9 @@ const loginLimiter = rateLimit({
 
 // Login - Get
 router.get('/login', (req, res) => {
-  res.render('auth/login', {
+  return res.render('auth/login', {
     title: "Login",
-    success: req.query.username != null,
+    message: req.query.message || null,
     usernameProvided: req.query.username || null,
     redirectURL: req.query.redirectURL || '/'
   });
@@ -53,8 +56,6 @@ router.post("/login", loginLimiter, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
 
     if (err) {
-      logger.err(err, req);
-
       return res.render("auth/login", {
         title: "Login",
         error: "Authentication error.",
@@ -63,7 +64,6 @@ router.post("/login", loginLimiter, (req, res, next) => {
     }
 
     if (!user) {
-      logger.err(new Error('Invalid username or password'), req);
       return res.render("auth/login", {
         title: "Login",
         error: "Invalid username or password.",
@@ -71,8 +71,15 @@ router.post("/login", loginLimiter, (req, res, next) => {
       });
     }
 
+    if (user.approved == false) {
+      return res.render("auth/login", {
+        title: "Login",
+        redirectURL,
+        message: "needingApprovalAccount"
+      });
+    }
+
     if (user.active == false) {
-      logger.err(new Error('Account inactive'), req);
       return res.render("auth/login", {
         title: "Login",
         error: "Account was terminated.",
@@ -96,7 +103,6 @@ router.post("/login", loginLimiter, (req, res, next) => {
     });
 
     // Finish
-    logger.event('Login success', `User: ${user._id} | IP: ${req.ip}`);
     const safeRedirect = redirectURL && redirectURL.startsWith('/') ? redirectURL : '/';
     return res.redirect(safeRedirect);
 
@@ -106,7 +112,6 @@ router.post("/login", loginLimiter, (req, res, next) => {
 
 // Logout
 router.get('/logout', (req, res) => {
-  logger.event('Logout', `User: ${req.token?._id || '???'} | IP: ${req.ip}`);
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -114,5 +119,31 @@ router.get('/logout', (req, res) => {
   });
   res.redirect('/');
 });
+
+// #######################
+//  RECOVER PASSWORD
+// #######################
+
+router.get('/recoverPassword', asyncHandler(async (req, res) => {
+    return res.render('auth/recoverPassword', { 
+      title: "Recover Password", 
+      });
+  })
+);
+
+router.post('/recoverPassword', emailUtil.emailLimiter, asyncHandler(async (req, res) => {
+  
+    const { email } = req.body  
+    const users = await UserController.getUsersFromEmailToRecovery(email);
+
+    for (const user of users)
+      await emailUtil.sendRecoveryPasswordEmail(email,user.userId,user.userName,user.token)
+
+    return res.render('auth/recoverPasswordEmailSent', { 
+      title: "Recover Password - Email sent", 
+      email
+    });
+  })
+);
 
 module.exports = router;
