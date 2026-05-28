@@ -1,3 +1,24 @@
+# Farewell L4D2 Blog
+
+This blog is currently offline. Was good while it was alive :D  
+Huge thanks to `L4D2 University` steam group chat that helped and used this blog, making it a special place.  
+Special thanks to:
+- Dani
+- Blebi
+- Kaspadzitas
+- Scream
+
+**Beginning of Blog** 04/04/2026  
+**Closure of Blog:** 28/05/2026  
+**Users Registered:** 5  
+**Blog Posts:**  10  
+**Domain of Blog:** https://blog.afbc04.com
+
+_Backup of blog is saved, in case it's open again :)_
+
+### Last view of Blog
+![Production Preview](docs/prodPreview.png)
+
 # Deploy
 
 ### Install
